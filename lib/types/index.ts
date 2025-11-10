@@ -71,3 +71,83 @@ export interface DashboardStats {
   monthlyRevenue: number;
   expiringMemberships: number;
 }
+
+// New types for member-facing app
+export interface Trainer {
+  id: string;
+  name: string;
+  specialty: string;
+  bio: string;
+  imageUrl?: string;
+}
+
+export interface Class {
+  id: string;
+  name: string;
+  description: string;
+  trainer: Trainer;
+  type: 'yoga' | 'spinning' | 'crossfit' | 'zumba' | 'pilates' | 'boxing' | 'strength' | 'cardio';
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  duration: number; // in minutes
+  maxParticipants: number;
+  bookedParticipants: number;
+  date: string;
+  time: string;
+}
+
+export interface Booking {
+  id: string;
+  classId: string;
+  class: Class;
+  userId: string;
+  bookingDate: string;
+  status: 'upcoming' | 'completed' | 'cancelled';
+}
+
+export interface Visit {
+  id: string;
+  userId: string;
+  checkInTime: string;
+  checkOutTime?: string;
+  duration?: number; // in minutes
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+  address: string;
+  membershipType: string;
+  membershipStartDate: string;
+  membershipExpiryDate: string;
+  status: 'active' | 'inactive' | 'expired';
+  emergencyContact: {
+    name: string;
+    phone: string;
+  };
+}
+
+export interface OpeningHours {
+  day: string;
+  open: string;
+  close: string;
+  isClosed: boolean;
+}
+
+export interface ShopProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: 'apparel' | 'equipment' | 'supplements' | 'accessories';
+  imageUrl?: string;
+  inStock: boolean;
+  stock: number;
+}
+
+export interface CartItem {
+  product: ShopProduct;
+  quantity: number;
+}
