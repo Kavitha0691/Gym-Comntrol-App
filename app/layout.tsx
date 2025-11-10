@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import ClientProviders from "@/components/ClientProviders";
 
 export const metadata: Metadata = {
-  title: "Gym Control - Management System",
-  description: "Complete gym management system for members, staff, and operations",
+  title: "Gym Control - Member Portal",
+  description: "Your personal gym management portal",
 };
 
 export default function RootLayout({
@@ -15,10 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navigation />
-        <main className="min-h-screen bg-gray-50">
-          {children}
-        </main>
+        <ClientProviders>
+          <Navigation />
+          <main className="min-h-screen bg-gray-50">
+            {children}
+          </main>
+        </ClientProviders>
       </body>
     </html>
   );
