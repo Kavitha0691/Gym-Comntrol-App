@@ -24,6 +24,7 @@ export const translations = {
       loading: 'Loading...',
       noResults: 'No results found',
       language: 'Language',
+      menu: 'Menu',
     },
     // Schedule page
     schedule: {
@@ -167,6 +168,7 @@ export const translations = {
       loading: 'Laddar...',
       noResults: 'Inga resultat hittades',
       language: 'Språk',
+      menu: 'Meny',
     },
     // Schedule page
     schedule: {
