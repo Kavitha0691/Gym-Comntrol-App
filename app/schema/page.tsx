@@ -2,12 +2,14 @@
 
 import Card from '@/components/Card';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useBooking } from '@/contexts/BookingContext';
 import { classes } from '@/lib/data/memberData';
 import { Class } from '@/lib/types';
 import { useState } from 'react';
 
 export default function SchemaPage() {
   const { t } = useLanguage();
+  const { isBooked, bookClass, cancelClass } = useBooking();
   const [selectedDate, setSelectedDate] = useState<string>('today');
 
   const today = new Date().toISOString().split('T')[0];
@@ -48,6 +50,14 @@ export default function SchemaPage() {
     if (available === 0) return { text: t.schedule.fullyBooked, color: 'text-red-600' };
     if (available <= 3) return { text: `${available} ${t.schedule.spots}`, color: 'text-orange-600' };
     return { text: `${available} ${t.schedule.spots}`, color: 'text-green-600' };
+  };
+
+  const handleBooking = (classId: string) => {
+    if (isBooked(classId)) {
+      cancelClass(classId);
+    } else {
+      bookClass(classId);
+    }
   };
 
   return (
@@ -98,6 +108,7 @@ export default function SchemaPage() {
         {filteredClasses.map((cls) => {
           const availability = getAvailabilityStatus(cls);
           const isFullyBooked = cls.bookedParticipants >= cls.maxParticipants;
+          const classIsBooked = isBooked(cls.id);
 
           return (
             <Card key={cls.id} className="hover:shadow-lg transition-shadow">
@@ -106,6 +117,11 @@ export default function SchemaPage() {
                   <h3 className="text-lg font-semibold text-gray-900">{cls.name}</h3>
                   <p className="text-sm text-gray-500 mt-1">{cls.description}</p>
                 </div>
+                {classIsBooked && (
+                  <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    Booked
+                  </span>
+                )}
               </div>
 
               <div className="space-y-3 mb-4">
@@ -140,16 +156,26 @@ export default function SchemaPage() {
                 </span>
               </div>
 
-              <button
-                disabled={isFullyBooked}
-                className={`w-full px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isFullyBooked
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                {isFullyBooked ? t.schedule.fullyBooked : t.schedule.bookNow}
-              </button>
+              {classIsBooked ? (
+                <button
+                  onClick={() => handleBooking(cls.id)}
+                  className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  {t.common.cancel}
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleBooking(cls.id)}
+                  disabled={isFullyBooked}
+                  className={`w-full px-4 py-2 rounded-lg font-medium transition-colors ${
+                    isFullyBooked
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                >
+                  {isFullyBooked ? t.schedule.fullyBooked : t.schedule.bookNow}
+                </button>
+              )}
             </Card>
           );
         })}
